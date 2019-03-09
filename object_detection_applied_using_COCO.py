@@ -14,13 +14,13 @@ from object_detection.utils import visualization_utils as vis_util
 
 
 # What model to download.
-MODEL_NAME = 'faster_rcnn_resnet101_kitti_2018_01_28'
-MODEL_FILE = 'faster_rcnn_resnet101_kitti_2018_01_28' + '.tar.gz'
+MODEL_NAME = 'ssd_mobilenet_v1_coco_2018_01_28'
+MODEL_FILE = MODEL_NAME + '.tar.gz'
 # Path to frozen detection graph. This is the actual model that is used for the object detection.
 PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/frozen_inference_graph.pb'
 # List of the strings that is used to add correct label for each box.
-PATH_TO_LABELS = os.path.join('/anaconda3/lib/python3.6/site-packages/tensorflow/models/research/object_detection/data', 'kitti_label_map.pbtxt')
-tar_file = tarfile.open('/anaconda3/lib/python3.6/site-packages/tensorflow/models/research/object_detection/downloaded_models/faster_rcnn_resnet101_kitti_2018_01_28.tar.gz')
+PATH_TO_LABELS = os.path.join('/anaconda3/lib/python3.6/site-packages/tensorflow/models/research/object_detection/data', 'mscoco_label_map.pbtxt')
+tar_file = tarfile.open('/anaconda3/lib/python3.6/site-packages/tensorflow/models/research/object_detection/downloaded_models/ssd_mobilenet_v1_coco_2018_01_28.tar.gz')
 for file in tar_file.getmembers():
   file_name = os.path.basename(file.name)
   if 'frozen_inference_graph.pb' in file_name:

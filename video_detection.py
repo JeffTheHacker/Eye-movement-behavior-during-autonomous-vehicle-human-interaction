@@ -1,4 +1,5 @@
-from object_detection_applied import processImages
+#from object_detection_applied_using_KITTY import processImages
+from object_detection_applied_using_COCO import processImages
 from video_to_frames import convert
 import pickle
 
@@ -20,7 +21,7 @@ while (i < len(dictArr)):
     print(boxes)
     print(classes)
     while (j < len(boxes)):
-        if (not (boxes[j][0] == 0 and boxes[j][1] == 0 and boxes[j][2] == 0 and boxes[j][3] == 0)) and classes[j] == 1:
+        if (not (boxes[j][0] == 0 and boxes[j][1] == 0 and boxes[j][2] == 0 and boxes[j][3] == 0)) and classes[j] == 3: #change this based on the label map
             miny = int(boxes[j][0] * height)
             minx = int(boxes[j][1] * width)
             maxy = int(boxes[j][2] * height)
