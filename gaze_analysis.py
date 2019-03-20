@@ -16,21 +16,34 @@ import numpy
 
 def heatMap(startTime,endTime,totalTime):
 
-    #(in seconds)
+    #(in seconds) (later converted to millis)
     #start time of video segment
     #end time of video segment
     #total time of video
     #saveLocation: location where output heatmap is to be saved
-    #gazeFilePath: location of gaze csv
+    #fixationFilePath: location of fixation csv
     #videoLocation: location of video
     #imageWidth and IimageHeight: dimension of a frame in a video
 
 
-    saveLocation = '/Users/jeffhe/Desktop/commitments/urap/Eye-movement-behavior-during-autonomous-vehicle-human-interaction/heatmap_output/heatmat.png'
-    gazeFilePath = "/Users/jeffhe/Desktop/commitments/urap/resources/pupil recordings/2019 02 07 13 40 29 AV Symbols 2/exports/overlayed/gaze_positions.csv"
-    videoLocation = "/Users/jeffhe/Desktop/commitments/urap/resources/pupil recordings/2019 02 07 13 40 29 AV Symbols 2/exports/original/world.mp4"
+
+    saveLocation = '/Users/jeffhe/Desktop/commitments/urap/resources/heatmap_processing/0308_1528_manual_03/heatmat.png'
+    fixationFilePath = "/Users/jeffhe/Desktop/commitments/urap/resources/heatmap_processing/0308_1528_manual_03/fixations.csv"
+    gazeFilePath = "/Users/jeffhe/Desktop/commitments/urap/resources/heatmap_processing/0308_1528_manual_03/gaze_positions.csv"
+    videoLocation = "/Users/jeffhe/Desktop/commitments/urap/resources/heatmap_processing/0308_1528_manual_03/worldwithoutgaze.mp4"
     imageWidth = 1280
     imageHeight = 720
+
+    def changeStartTimeMillis():
+        with open(gazeFilePath) as f:
+            reader = csv.reader(f)
+            reader = list(reader)
+            startTimeSeconds = float(reader[1][0])
+        return startTimeSeconds
+
+    startTimeMillis = changeStartTimeMillis() * 1000
+
+
 
     vidcap = cv2.VideoCapture(videoLocation)
     frames = []
@@ -44,28 +57,36 @@ def heatMap(startTime,endTime,totalTime):
     endFrame = (endTime / totalTime) * len(frames)
     image = frames[int((startFrame + endFrame) / 2)]
 
-    with open(gazeFilePath) as f:
+
+    startTime = startTime * 1000
+    endTime = endTime * 1000
+
+
+    with open(fixationFilePath) as f:
         reader = csv.reader(f)
         line_num = 0
-        norm_pos_x = []
-        norm_pos_y = []
+        Efix = []
         for row in reader:
             if (line_num != 0):
-                if not (float(row[2]) < 0.5 or float(row[3]) > 1 or float(row[3]) < 0 or float(row[4]) > 1 or float(row[4]) < 0):
-                    norm_pos_x += [int(float(row[3]) * 1280)]
-                    norm_pos_y += [imageHeight - int(float(row[4]) * 720)]
+                start = float(row[1]) * 1000 - startTimeMillis
+                Efix += [[start,start + float(row[2]),float(row[2]),int(float(row[5]) * imageWidth),imageHeight - int(float(row[6]) * imageHeight)]]
             line_num += 1
 
-    startRow = (startTime / totalTime) * line_num
-    endRow = (endTime / totalTime) * line_num
-
-    norm_pos_x = norm_pos_x[int(startRow):int(endRow)]
-    norm_pos_y = norm_pos_y[int(startRow):int(endRow)]
-
-    Sfix, Efix = fixation_detection(norm_pos_x,norm_pos_y,range(len(norm_pos_x)))
-
+    i = 0
+    while (i < len(Efix)):
+        start = Efix[i][0]
+        end = Efix[i][1]
+        print(startTime,end)
+        if (startTime > end):
+            Efix.remove(Efix[i])
+            continue
+        if (endTime < start):
+            Efix.remove(Efix[i])
+            continue
+        i += 1
 
     draw_heatmap(Efix,(imageWidth,imageHeight),image,savefilename=saveLocation)
+    print(Efix)
 
 
-heatMap(70,142,158)
+heatMap(44,53,65)

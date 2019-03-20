@@ -1,12 +1,13 @@
 #from object_detection_applied_using_KITTY import processImages
-from object_detection_applied_using_COCO import processImages
+from object_detection_applied_using_resnet import processImages
 from video_to_frames import convert
 import pickle
+import cv2
 
 imgArr = []
 dictArr = []
 finalTable = []
-convert("/Users/jeffhe/Desktop/commitments/urap/week 1/world.mp4","/Users/jeffhe/Desktop/commitments/urap/week 1/frames/")
+#convert("/Users/jeffhe/Desktop/commitments/urap/week 1/world.mp4","/Users/jeffhe/Desktop/commitments/urap/week 1/frames/")
 imgArr, dictArr = processImages("/Users/jeffhe/Desktop/commitments/urap/week 1/frames",357) #miny,minx,maxy,maxx
 
 height,width,channel = imgArr[0].shape
@@ -33,4 +34,9 @@ while (i < len(dictArr)):
 
 print(finalTable)
 pickle.dump(finalTable,open("finalTable.pickle",'wb'))
+
+count = 0
+for i in imgArr:
+    cv2.imwrite('/Users/jeffhe/Desktop/commitments/urap/Eye-movement-behavior-during-autonomous-vehicle-human-interaction/video_detection_output' + str(count) + '.png',cv2.cvtColor(i, cv2.COLOR_RGB2BGR))
+    count += 1
 
